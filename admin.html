@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Damodar Traders</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    
+    .admin-header {
+      background: #2a5f8a;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .admin-header h2 {
+      margin: 0;
+    }
+    
+    .logout-btn {
+      background: #ff4444;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    
+    #adminContainer {
+      max-width: 1200px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    /* Media Grid Styles */
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .media-item {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      background: white;
+    }
+    
+    .media-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .media-item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .media-item > div {
+      padding: 15px;
+    }
+    
+    .media-item h3 {
+      margin-top: 0;
+      color: #333;
+    }
+    
+    .price-display {
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    
+    .original-price {
+      text-decoration: line-through;
+      color: #999;
+      margin-right: 8px;
+    }
+    
+    .discounted-price {
+      color: #e53935;
+    }
+    
+    .discount-badge {
+      background: #e53935;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      margin-left: 8px;
+    }
+    
+    .media-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+    
+    .detail-btn, .delete-btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    
+    .detail-btn {
+      background: #2a5f8a;
+      color: white;
+    }
+    
+    .delete-btn {
+      background: #e53935;
+      color: white;
+    }
+    
+    /* Product Detail Styles */
+    .product-container {
+      display: flex;
+      gap: 30px;
+      margin-top: 20px;
+    }
+    
+    .product-image-container {
+      flex: 1;
+      max-width: 400px;
+    }
+    
+    .product-form {
+      flex: 2;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    .form-group textarea {
+      min-height: 100px;
+    }
+    
+    /* Size & Price Options */
+    .size-price-container {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .size-price-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr 30px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .size-price-item {
+      display: grid;
+      grid-template-columns: 1fr 1fr 30px;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    
+    .add-size-btn {
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 15px;
+    }
+    
+    .remove-size-btn {
+      background: #e53935;
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #saveProductBtn {
+      background: #2a5f8a;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 10px;
+    }
+    
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-left: 8px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .product-container {
+        flex-direction: column;
+      }
+      
+      .product-image-container {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-header">
+    <h2>Damodar Traders Admin Panel</h2>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+  
+  <div id="adminContainer">
+    <!-- Media Management Section -->
+    <div id="mediaManagement">
+      <h2>Product Management</h2>
+      <input type="file" id="mediaUpload" accept="image/*">
+      <button id="addMediaBtn" onclick="addUploadedMedia()">Add Product</button>
+      <div id="mediaPreview" class="media-grid"></div>
+    </div>
+
+    <!-- Product Detail Section (hidden by default) -->
+    <div id="productDetail" style="display:none;">
+      <h2>Product Details</h2>
+      <button onclick="closeProductDetail()">← Back to Products</button>
+      <div class="product-container">
+        <div class="product-image-container">
+          <img id="detailImage" src="" style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        <div class="product-form">
+          <form id="productForm">
+            <div class="form-group">
+              <label for="productName">Product Name:</label>
+              <input type="text" id="productName" name="productName" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Update Product Image:</label>
+              <input type="file" id="editMediaUpload" accept="image/*">
+            </div>
+            
+            <div class="form-group">
+              <label>Size & Price Options:</label>
+              <div id="sizePriceContainer" class="size-price-container">
+                <div class="size-price-header">
+                  <span>Size</span>
+                  <span>Price (₹)</span>
+                  <span></span>
+                </div>
+              </div>
+              <button type="button" class="add-size-btn" onclick="addSizePriceOption()">+ Add Size Option</button>
+            </div>
+            
+            <div class="form-group">
+              <label for="productDiscount">Discount (%):</label>
+              <input type="number" id="productDiscount" name="productDiscount" min="0" max="100" step="1" placeholder="0">
+            </div>
+            
+            <div class="form-group">
+              <label for="productDescription">Description:</label>
+              <textarea id="productDescription" name="productDescription" rows="4"></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="productCategory">Category:</label>
+              <select id="productCategory" name="productCategory">
+                <option value="pipes">Pipes</option>
+                <option value="fittings">Fittings</option>
+                <option value="valves">Valves</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="productMaterial">Material:</label>
+              <input type="text" id="productMaterial" name="productMaterial" placeholder="e.g. Galvanized Iron">
+            </div>
+            
+            <div class="form-group">
+              <label for="productPressureRating">Pressure Rating:</label>
+              <input type="text" id="productPressureRating" name="productPressureRating" placeholder="e.g. 10-15 kg/cm²">
+            </div>
+            
+            <div class="form-group">
+              <label for="productTemperatureRange">Temperature Range:</label>
+              <input type="text" id="productTemperatureRange" name="productTemperatureRange" placeholder="e.g. -20°C to 120°C">
+            </div>
+            
+            <div class="form-group">
+              <label for="productStandards">Standards:</label>
+              <input type="text" id="productStandards" name="productStandards" placeholder="e.g. IS, ISO, DIN">
+            </div>
+            
+            <div class="form-group">
+              <label for="productApplication">Application:</label>
+              <input type="text" id="productApplication" name="productApplication" placeholder="e.g. Water supply, Drainage systems">
+            </div>
+            
+            <button type="button" id="saveProductBtn" onclick="saveProductDetails()">Save Details</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE_URL = 'http://localhost:3000/api';
+    let currentProductId = null;
+
+    // Helper function to show loading state on buttons
+    function setLoading(button, isLoading) {
+      if (isLoading) {
+        button.disabled = true;
+        button.innerHTML = button.textContent + ' <span class="loading"></span>';
+      } else {
+        button.disabled = false;
+        const loadingSpan = button.querySelector('.loading');
+        if (loadingSpan) {
+          button.innerHTML = button.textContent;
+        }
+      }
+    }
+
+    // Add size and price option to the form
+    function addSizePriceOption(size = '', price = '') {
+      const container = document.getElementById('sizePriceContainer');
+      
+      const optionDiv = document.createElement('div');
+      optionDiv.className = 'size-price-item';
+      optionDiv.innerHTML = `
+        <input type="text" placeholder="Size (e.g. 1/2&quot;)" value="${size}" class="size-option">
+        <input type="number" placeholder="Price (₹)" value="${price}" min="0" step="0.01" class="price-option">
+        <button type="button" class="remove-size-btn" onclick="this.parentElement.remove()">×</button>
+      `;
+      container.appendChild(optionDiv);
+    }
+
+    // Upload new product image
+    async function addUploadedMedia() {
+      const fileInput = document.getElementById('mediaUpload');
+      const addMediaBtn = document.getElementById('addMediaBtn');
+      const file = fileInput.files[0];
+      
+      if (!file) {
+        alert('Please select an image first!');
+        return;
+      }
+
+      setLoading(addMediaBtn, true);
+
+      try {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const response = await fetch(`${API_BASE_URL}/admin/products`, {
+          method: 'POST',
+          body: formData,
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to upload image');
+        }
+
+        const product = await response.json();
+        displayProduct(product);
+        alert('Product added successfully!');
+        fileInput.value = '';
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error: ' + error.message);
+      } finally {
+        setLoading(addMediaBtn, false);
+      }
+    }
+
+    // Delete product
+    async function deleteImage(productId) {
+      if (!confirm('Are you sure you want to delete this product?')) return;
+
+      const deleteButtons = document.querySelectorAll(`.delete-btn[onclick*="${productId}"]`);
+      deleteButtons.forEach(btn => {
+        btn.disabled = true;
+        btn.innerHTML = 'Deleting...';
+      });
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/products/${productId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to delete product');
+        }
+
+        const result = await response.json();
+        
+        // Remove from UI immediately
+        const productElement = document.querySelector(`.media-item[data-id="${productId}"]`);
+        if (productElement) {
+          productElement.classList.add('deleting');
+          setTimeout(() => productElement.remove(), 300);
+        }
+        
+        alert(result.message || 'Product deleted successfully');
+        
+      } catch (error) {
+        console.error('Delete error:', error);
+        alert(`Delete failed: ${error.message}`);
+        
+        // Reset buttons
+        deleteButtons.forEach(btn => {
+          btn.disabled = false;
+          btn.innerHTML = 'Delete';
+        });
+      }
+    }
+
+    // Show product details in edit form
+    async function showProductDetail(productId) {
+      currentProductId = productId;
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/products/${productId}`, {
+          credentials: 'include'
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch product details');
+        }
+        
+        const product = await response.json();
+        
+        document.getElementById('detailImage').src = product.image || '';
+        document.getElementById('productName').value = product.name || 'New Product';
+        document.getElementById('productDiscount').value = product.discount || 0;
+        document.getElementById('productDescription').value = product.description || '';
+        document.getElementById('productCategory').value = product.category || 'pipes';
+        document.getElementById('productMaterial').value = product.material || '';
+        document.getElementById('productPressureRating').value = product.pressureRating || '';
+        document.getElementById('productTemperatureRange').value = product.temperatureRange || '';
+        document.getElementById('productStandards').value = product.standards || '';
+        document.getElementById('productApplication').value = product.application || '';
+        
+        // Clear existing size options
+        document.getElementById('sizePriceContainer').innerHTML = `
+          <div class="size-price-header">
+            <span>Size</span>
+            <span>Price (₹)</span>
+            <span></span>
+          </div>
+        `;
+        
+        // Add size options
+        if (product.sizeOptions && Array.isArray(product.sizeOptions) && product.sizeOptions.length > 0) {
+          product.sizeOptions.forEach(option => {
+            addSizePriceOption(option.size, option.price);
+          });
+        } else {
+          // Add default empty option if none exist
+          addSizePriceOption();
+        }
+        
+        document.getElementById('mediaManagement').style.display = 'none';
+        document.getElementById('productDetail').style.display = 'block';
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error: ' + error.message);
+      }
+    }
+
+    // Close product detail view
+    function closeProductDetail() {
+      document.getElementById('mediaManagement').style.display = 'block';
+      document.getElementById('productDetail').style.display = 'none';
+      currentProductId = null;
+      document.getElementById('editMediaUpload').value = '';
+    }
+
+    // Save product details
+    async function saveProductDetails() {
+      if (!currentProductId) return;
+
+      const saveProductBtn = document.getElementById('saveProductBtn');
+      setLoading(saveProductBtn, true);
+
+      try {
+        // Collect size options
+        const sizeOptions = [];
+        const sizeInputs = document.querySelectorAll('.size-option');
+        const priceInputs = document.querySelectorAll('.price-option');
+        
+        for (let i = 0; i < sizeInputs.length; i++) {
+          if (sizeInputs[i].value.trim() !== '' || priceInputs[i].value.trim() !== '') {
+            sizeOptions.push({
+              size: sizeInputs[i].value.trim(),
+              price: parseFloat(priceInputs[i].value) || 0
+            });
+          }
+        }
+        
+        // Prepare form data (for potential image upload)
+        const formData = new FormData();
+        const fileInput = document.getElementById('editMediaUpload');
+        if (fileInput.files[0]) {
+          formData.append('image', fileInput.files[0]);
+        }
+        
+        // Add other product data directly to formData
+        formData.append('name', document.getElementById('productName').value);
+        formData.append('sizeOptions', JSON.stringify(sizeOptions.length ? sizeOptions : [{ size: '', price: 0 }]));
+        formData.append('discount', parseInt(document.getElementById('productDiscount').value) || 0);
+        formData.append('description', document.getElementById('productDescription').value);
+        formData.append('category', document.getElementById('productCategory').value);
+        formData.append('material', document.getElementById('productMaterial').value);
+        formData.append('pressureRating', document.getElementById('productPressureRating').value);
+        formData.append('temperatureRange', document.getElementById('productTemperatureRange').value);
+        formData.append('standards', document.getElementById('productStandards').value);
+        formData.append('application', document.getElementById('productApplication').value);
+
+        const response = await fetch(`${API_BASE_URL}/admin/products/${currentProductId}`, {
+          method: 'PUT',
+          body: formData,
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to save product');
+        }
+
+        const updatedProduct = await response.json();
+        alert('Product details saved successfully!');
+        displayProduct(updatedProduct, true);
+        closeProductDetail();
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error: ' + error.message);
+      } finally {
+        setLoading(saveProductBtn, false);
+      }
+    }
+
+    // Display a product in the media grid
+    function displayProduct(product, replace = false) {
+      const previewDiv = document.getElementById('mediaPreview');
+      
+      if (replace) {
+        // Find and replace existing product display
+        const existingItem = document.querySelector(`.media-item[data-id="${product._id}"]`);
+        if (existingItem) {
+          existingItem.remove();
+        }
+      }
+      
+      // Create container for product
+      const container = document.createElement('div');
+      container.className = 'media-item';
+      container.dataset.id = product._id;
+      
+      // Create image element
+      const img = document.createElement('img');
+      img.src = product.image;
+      img.alt = product.name;
+      
+      // Get all size options - ensure sizeOptions is always an array
+      let priceDisplay = '';
+      const sizeOptions = Array.isArray(product.sizeOptions) ? product.sizeOptions : [];
+      
+      if (sizeOptions.length > 0) {
+        const discount = product.discount || 0;
+        
+        // Show first price option with discount if available
+        const firstOption = sizeOptions[0];
+        if (firstOption.price > 0) {
+          const originalPrice = firstOption.price;
+          const discountedPrice = originalPrice * (1 - discount/100);
+          
+          priceDisplay = discount > 0 ? 
+            `<div class="price-display">
+              <span class="original-price">₹${originalPrice.toFixed(2)}</span>
+              <span class="discounted-price">₹${discountedPrice.toFixed(2)}</span>
+              <span class="discount-badge">${discount}% OFF</span>
+            </div>` : 
+            `<div class="price-display">₹${originalPrice.toFixed(2)}</div>`;
+        } else {
+          priceDisplay = '<div class="price-display">Price not set</div>';
+        }
+        
+        // List all available sizes
+        const sizes = sizeOptions
+          .filter(opt => opt.size)
+          .map(opt => opt.size)
+          .join(', ');
+        
+        if (sizes) {
+          priceDisplay += `<p>Available sizes: ${sizes}</p>`;
+        }
+      } else {
+        priceDisplay = '<div class="price-display">Price not set</div>';
+      }
+      
+      // Create product info display
+      const infoDiv = document.createElement('div');
+      infoDiv.innerHTML = `
+        <h3>${product.name || 'New Product'}</h3>
+        ${priceDisplay}
+        <p>Category: ${product.category || 'Not specified'}</p>
+        ${product.material ? `<p>Material: ${product.material}</p>` : ''}
+        ${product.pressureRating ? `<p>Pressure Rating: ${product.pressureRating}</p>` : ''}
+      `;
+      
+      // Create action buttons
+      const actionsDiv = document.createElement('div');
+      actionsDiv.className = 'media-actions';
+      actionsDiv.innerHTML = `
+        <button class="detail-btn" onclick="showProductDetail('${product._id}')">Edit Details</button>
+        <button class="delete-btn" onclick="deleteImage('${product._id}')">Delete</button>
+      `;
+      
+      // Add elements to container
+      container.appendChild(img);
+      container.appendChild(infoDiv);
+      container.appendChild(actionsDiv);
+      
+      if (replace) {
+        // Insert at the beginning if replacing
+        previewDiv.prepend(container);
+      } else {
+        previewDiv.appendChild(container);
+      }
+    }
+
+    // Load all products
+    async function loadProducts() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/products`, {
+          credentials: 'include'
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to load products');
+        }
+        
+        const products = await response.json();
+        const previewDiv = document.getElementById('mediaPreview');
+        
+        // Clear existing previews
+        previewDiv.innerHTML = '';
+        
+        // Display each product
+        products.forEach(product => {
+          displayProduct(product);
+        });
+        
+        // Make sure we're showing the media management view
+        closeProductDetail();
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error: ' + error.message);
+      }
+    }
+
+    // Logout function
+    async function logout() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/logout`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+        
+        if (!response.ok) {
+          throw new Error('Logout failed');
+        }
+        
+        window.location.href = '/admin/login';
+      } catch (error) {
+        console.error('Logout error:', error);
+        alert('Logout failed: ' + error.message);
+      }
+    }
+
+    // Check auth status when admin panel loads
+    async function checkAdminAuth() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/status`, {
+          credentials: 'include'
+        });
+        
+        if (!response.ok) {
+          window.location.href = '/admin/login';
+          return;
+        }
+        
+        // If authenticated, load products
+        loadProducts();
+      } catch (error) {
+        console.error('Auth check error:', error);
+        window.location.href = '/admin/login';
+      }
+    }
+
+    // Initialize the admin panel when page loads
+    window.onload = function() {
+      checkAdminAuth();
+    };
+  </script>
+</body>
+</html>

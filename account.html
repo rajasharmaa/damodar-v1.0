@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account - Damodar Traders</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="style1.css">
+  <style>
+    .account-container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .account-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .account-details {
+      margin-bottom: 30px;
+    }
+    .account-details h3 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+    .detail-row {
+      display: flex;
+      margin-bottom: 10px;
+    }
+    .detail-label {
+      width: 150px;
+      font-weight: 500;
+    }
+    .detail-value {
+      flex: 1;
+    }
+    .logout-btn {
+      padding: 8px 15px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .logout-btn:hover {
+      background: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">
+      <img src="./Create_a_logo_concep-removebg-preview.png" alt="Damodar Traders Logo">
+    </a>
+    <div class="btn">
+      <button class="btn1" onclick="window.location.href='index.html'">Home</button>
+    </div>
+  </nav>
+
+  <div class="account-container">
+    <div class="account-header">
+      <h2>My Account</h2>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+    
+    <div class="account-details">
+      <h3>Personal Information</h3>
+      <div class="detail-row">
+        <div class="detail-label">Name:</div>
+        <div class="detail-value" id="userName"></div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Email:</div>
+        <div class="detail-value" id="userEmail"></div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Phone:</div>
+        <div class="detail-value" id="userPhone"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('/api/auth/status');
+        const data = await response.json();
+        
+        if (!data.authenticated) {
+          window.location.href = 'login.html?redirect=account.html';
+          return;
+        }
+        
+        // Display user info
+        document.getElementById('userName').textContent = data.user.name;
+        document.getElementById('userEmail').textContent = data.user.email;
+        
+        // Fetch additional user details
+        const userResponse = await fetch(`/api/users/${data.user.id}`);
+        const userData = await userResponse.json();
+        if (userData.phone) {
+          document.getElementById('userPhone').textContent = userData.phone;
+        }
+      } catch (err) {
+        console.error('Error loading account:', err);
+        window.location.href = 'login.html?redirect=account.html';
+      }
+    });
+    
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      try {
+        const response = await fetch('/api/auth/logout', {
+          method: 'POST'
+        });
+        
+        const data = await response.json();
+        if (response.ok) {
+          window.location.href = 'index.html';
+        }
+      } catch (err) {
+        console.error('Logout failed:', err);
+      }
+    });
+  </script>
+</body>
+</html>

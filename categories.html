@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Categories - Damodar Traders</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f9f9f9;
+    }
+    
+    nav {
+      height: 90px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      left: 0;
+      justify-content: space-around;
+      background-color: #ffffff;
+      backdrop-filter: blur(10px);
+      z-index: 999;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    nav > ul {
+      display: flex;
+      align-items: center;
+      font-size: clamp(14px, 1.3vw, 18px);
+      gap: 40px;
+      list-style: none;
+    }
+
+    nav img {
+      width: min(15vw, 200px);
+      margin-top: 10px;
+    }
+
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      padding: 15px;
+      color: #333;
+    }
+
+    .btn .btn1 {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 25px;
+      font-size: clamp(12px, 1vw, 16px);
+      box-shadow: 5px 3px 5px rgba(0,0,0,0.1);
+      margin-right: 10px;
+      transition: transform 0.3s, background-color 0.3s;
+      background-color: #2a5f8a;
+      color: white;
+    }
+
+    .btn1:hover {
+      background-color: #1d4567;
+      transform: scale(1.05);
+    }
+    
+    .nav-product {
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+    
+    .nav-product svg {
+      margin-left: 5px;
+      width: 18px;
+      height: 18px;
+      transition: transform 0.3s;
+    }
+    
+    .product-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: white;
+      min-width: 180px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border-radius: 5px;
+      padding: 8px 0;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    
+    .nav-product:hover .product-dropdown,
+    .product-dropdown:hover {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .nav-product:hover svg {
+      transform: rotate(180deg);
+    }
+    
+    .product-dropdown a {
+      display: block;
+      padding: 10px 16px;
+      color: #555;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    
+    .product-dropdown a:hover {
+      background: #f5f5f5;
+      color: #2a5f8a;
+      padding-left: 20px;
+    }
+    
+    .line {
+      border: none;
+      height: 1px;
+      background-color: #eee;
+      margin: 0;
+    }
+    
+    .main {
+      padding: 0 5%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .categories-header {
+      text-align: center;
+      padding: 40px 0;
+    }
+    
+    .categories-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: #222;
+    }
+    
+    .categories-header p {
+      color: #666;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .category-section {
+      margin: 50px 0;
+    }
+    
+    .category-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+      flex-wrap: wrap;
+    }
+    
+    .category-title h2 {
+      font-size: 1.8rem;
+      color: #2a5f8a;
+      margin-right: 15px;
+    }
+    
+    .category-title .view-all {
+      margin-left: auto;
+      color: #2a5f8a;
+      font-size: 0.9rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+    
+    .category-title .view-all i {
+      margin-left: 5px;
+      font-size: 0.8rem;
+    }
+    
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 25px;
+    }
+    
+    .product-card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .product-image {
+      height: 200px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f7fa;
+    }
+    
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.3s;
+    }
+    
+    .product-card:hover .product-image img {
+      transform: scale(1.05);
+    }
+    
+    .product-info {
+      padding: 20px;
+    }
+    
+    .product-name {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      color: #333;
+      font-weight: 600;
+    }
+    
+    .product-price {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    
+    .current-price {
+      font-size: 1.2rem;
+      color: #e63946;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+    
+    .original-price {
+      text-decoration: line-through;
+      color: #999;
+      font-size: 0.9rem;
+    }
+    
+    .discount-badge {
+      background: #e63946;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    
+    .product-category {
+      display: inline-block;
+      background: #f0f0f0;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: #555;
+      margin-top: 10px;
+    }
+    
+    .view-more-btn {
+      display: block;
+      text-align: center;
+      margin: 40px auto;
+      padding: 12px 30px;
+      background: #2a5f8a;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+      max-width: 200px;
+    }
+    
+    .view-more-btn:hover {
+      background: #1d4567;
+    }
+
+    .no-products {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px;
+      color: #666;
+      font-size: 1.1rem;
+    }
+    
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        padding: 15px;
+        height: auto;
+        gap: 15px;
+      }
+      
+      nav > ul {
+        margin-top: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+      }
+      
+      nav ul li {
+        margin: 5px 8px;
+      }
+      
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+      }
+      
+      .categories-header h1 {
+        font-size: 2rem;
+      }
+      
+      .category-title h2 {
+        font-size: 1.5rem;
+      }
+      
+      .product-dropdown {
+        position: static;
+        box-shadow: none;
+        border-radius: 0;
+        display: none;
+        opacity: 1;
+        transform: none;
+        width: 100%;
+      }
+      
+      .nav-product:hover .product-dropdown {
+        display: block;
+      }
+
+      .category-title .view-all {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .categories-header h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">
+      <img src="./Create_a_logo_concep-removebg-preview.png" alt="Damodar Traders Logo">
+    </a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li class="nav-product">
+        <a href="categories.html">Products</a>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M18.2197 8.546L12.2531 14.5126C12.1555 14.6102 11.9972 14.6102 11.8996 14.5126L6.02767 8.64067C5.73477 8.34778 5.2599 8.34778 4.96701 8.64067C4.67411 8.93357 4.67411 9.40844 4.96701 9.70133L10.8389 15.5732C11.5223 16.2566 12.6304 16.2566 13.3138 15.5732L19.2803 9.60666C19.5732 9.31377 19.5732 8.8389 19.2803 8.546C18.9874 8.25311 18.5126 8.25311 18.2197 8.546Z"
+            fill="currentColor"></path>
+        </svg>
+        <div class="product-dropdown">
+          <a href="categories.html">All Categories</a>
+          <a href="categories.html?category=pipes">Pipes</a>
+          <a href="categories.html?category=fittings">Fittings</a>
+          <a href="categories.html?category=valves">Valves</a>
+          <a href="categories.html?category=other">Other Products</a>
+        </div>
+      </li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="contact.html">Contact us</a></li>
+    </ul>
+    
+  </nav>
+
+  <hr class="line">
+
+  <div class="main">
+    <div class="categories-header">
+      <h1>Our Product Categories</h1>
+      <p>Explore our wide range of high-quality industrial products designed to meet your specific needs.</p>
+    </div>
+
+    <div class="category-section" id="pipes-section">
+      <div class="category-title">
+        <h2>Pipes</h2>
+        <a href="categories.html?category=pipes" class="view-all">
+          View all pipes <i class="fas fa-chevron-right"></i>
+        </a>
+      </div>
+      <div class="products-grid" id="pipes-grid">
+        <!-- Pipes will be loaded here -->
+      </div>
+    </div>
+
+    <div class="category-section" id="fittings-section">
+      <div class="category-title">
+        <h2>Fittings</h2>
+        <a href="categories.html?category=fittings" class="view-all">
+          View all fittings <i class="fas fa-chevron-right"></i>
+        </a>
+      </div>
+      <div class="products-grid" id="fittings-grid">
+        <!-- Fittings will be loaded here -->
+      </div>
+    </div>
+
+    <div class="category-section" id="valves-section">
+      <div class="category-title">
+        <h2>Valves</h2>
+        <a href="categories.html?category=valves" class="view-all">
+          View all valves <i class="fas fa-chevron-right"></i>
+        </a>
+      </div>
+      <div class="products-grid" id="valves-grid">
+        <!-- Valves will be loaded here -->
+      </div>
+    </div>
+
+    <div class="category-section" id="other-section">
+      <div class="category-title">
+        <h2>Other Products</h2>
+        <a href="categories.html?category=other" class="view-all">
+          View all other products <i class="fas fa-chevron-right"></i>
+        </a>
+      </div>
+      <div class="products-grid" id="other-grid">
+        <!-- Other products will be loaded here -->
+      </div>
+    </div>
+
+    <button class="view-more-btn" id="viewMoreBtn">View More Products</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const API_BASE_URL = 'http://localhost:3000/api';
+      const urlParams = new URLSearchParams(window.location.search);
+      const category = urlParams.get('category');
+      const showAll = urlParams.get('showAll');
+      const defaultImage = "assets/Screenshot_2025-06-19_201249-removebg-preview.png";
+      
+      // If a specific category is selected, show only that category
+      if (category) {
+        document.querySelectorAll('.category-section').forEach(section => {
+          if (!section.id.startsWith(category)) {
+            section.style.display = 'none';
+          }
+        });
+        document.getElementById('viewMoreBtn').style.display = 'none';
+        document.querySelector('.categories-header h1').textContent = `${category.charAt(0).toUpperCase() + category.slice(1)} Products`;
+      }
+
+      // More comprehensive fallback data
+      const fallbackProducts = [
+        {
+          _id: '1',
+          name: 'PVC Pipe',
+          category: 'pipes',
+          description: 'High-quality PVC pipe for industrial use',
+          image: 'https://via.placeholder.com/300x200?text=PVC+Pipe',
+          sizeOptions: [{ size: '1 inch', price: 150 }, { size: '2 inch', price: 250 }],
+          discount: 0
+        },
+        {
+          _id: '2',
+          name: 'Elbow Fitting',
+          category: 'fittings',
+          description: '90-degree elbow fitting for pipe connections',
+          image: 'https://via.placeholder.com/300x200?text=Elbow+Fitting',
+          sizeOptions: [{ size: '1/2 inch', price: 45 }, { size: '3/4 inch', price: 60 }],
+          discount: 0
+        },
+        {
+          _id: '3',
+          name: 'Ball Valve',
+          category: 'valves',
+          description: 'Durable ball valve for fluid control',
+          image: 'https://via.placeholder.com/300x200?text=Ball+Valve',
+          sizeOptions: [{ size: '1 inch', price: 120 }, { size: '2 inch', price: 200 }],
+          discount: 10
+        },
+        {
+          _id: '4',
+          name: 'Pipe Clamp',
+          category: 'other',
+          description: 'Sturdy pipe clamp for secure installations',
+          image: 'https://via.placeholder.com/300x200?text=Pipe+Clamp',
+          sizeOptions: [{ size: 'Standard', price: 25 }],
+          discount: 0
+        }
+      ];
+
+      // Load products with better error handling
+      async function loadProducts() {
+        let products = [];
+        
+        try {
+          // Try to load from localStorage first
+          const storedProducts = localStorage.getItem('productDetails');
+          if (storedProducts) {
+            products = JSON.parse(storedProducts);
+            if (Array.isArray(products) && products.length > 0) {
+              displayProducts(products);
+            }
+          }
+
+          // Then try to fetch from API
+          let endpoint = '/products';
+          if (category) {
+            endpoint = `/products/category/${category}`;
+          }
+
+          const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              // Add your authentication token here if needed
+              // 'Authorization': 'Bearer your-auth-token'
+            },
+            credentials: 'include' // Include cookies if needed
+          });
+
+          if (!response.ok) {
+            throw new Error(`API request failed with status ${response.status}`);
+          }
+
+          const apiProducts = await response.json();
+          
+          if (Array.isArray(apiProducts)) {
+            products = apiProducts;
+            // Store in localStorage for future use
+            localStorage.setItem('productDetails', JSON.stringify(products));
+          }
+        } catch (error) {
+          console.error('Error loading products:', error);
+          // If no products loaded yet, use fallback
+          if (products.length === 0) {
+            products = fallbackProducts;
+            console.warn('Using fallback product data');
+          }
+        } finally {
+          displayProducts(products);
+        }
+      }
+
+      function displayProducts(products) {
+        if (!products || !Array.isArray(products)) {
+          showErrorMessage('Invalid product data received');
+          return;
+        }
+
+        if (products.length === 0) {
+          showErrorMessage('No products available');
+          return;
+        }
+
+        // Group products by category
+        const productsByCategory = {
+          pipes: [],
+          fittings: [],
+          valves: [],
+          other: []
+        };
+
+        products.forEach(product => {
+          const productCategory = product.category?.toLowerCase() || 'other';
+          if (productsByCategory[productCategory]) {
+            productsByCategory[productCategory].push(product);
+          } else {
+            productsByCategory.other.push(product);
+          }
+        });
+
+        // Display products in their respective sections
+        for (const [category, categoryProducts] of Object.entries(productsByCategory)) {
+          const gridElement = document.getElementById(`${category}-grid`);
+          if (!gridElement) continue;
+
+          gridElement.innerHTML = '';
+          
+          // Determine how many products to show
+          const productsToShow = (showAll || window.location.search.includes('category')) ? 
+            categoryProducts : 
+            categoryProducts.slice(0, 4);
+          
+          if (productsToShow.length === 0) {
+            gridElement.innerHTML = '<div class="no-products">No products available in this category</div>';
+            continue;
+          }
+
+          productsToShow.forEach(product => {
+            const productCard = createProductCard(product);
+            gridElement.appendChild(productCard);
+          });
+        }
+      }
+
+      function createProductCard(product) {
+        const productCard = document.createElement('a');
+        productCard.href = `product-details.html?id=${product._id}`;
+        productCard.className = 'product-card';
+        
+        // Product image
+        const productImage = document.createElement('div');
+        productImage.className = 'product-image';
+        const img = document.createElement('img');
+        img.src = product.image || product.imagePath || defaultImage;
+        img.alt = product.name || 'Product Image';
+        img.loading = "lazy";
+        img.onerror = function() {
+          this.src = defaultImage;
+        };
+        productImage.appendChild(img);
+        
+        // Product info
+        const productInfo = document.createElement('div');
+        productInfo.className = 'product-info';
+        
+        const productName = document.createElement('h3');
+        productName.className = 'product-name';
+        productName.textContent = product.name || 'Unnamed Product';
+        
+        const productPrice = document.createElement('div');
+        productPrice.className = 'product-price';
+        
+        // Get the first available price if sizeOptions exist
+        let price = 0;
+        if (product.sizeOptions && product.sizeOptions.length > 0 && product.sizeOptions[0].price) {
+          price = product.sizeOptions[0].price;
+        }
+        
+        if (price > 0) {
+          const currentPrice = document.createElement('span');
+          currentPrice.className = 'current-price';
+          
+          if (product.discount && product.discount > 0) {
+            const discountedPrice = price * (1 - product.discount/100);
+            currentPrice.textContent = `₹${discountedPrice.toFixed(2)}`;
+            
+            const originalPrice = document.createElement('span');
+            originalPrice.className = 'original-price';
+            originalPrice.textContent = `₹${price.toFixed(2)}`;
+            
+            const discountBadge = document.createElement('span');
+            discountBadge.className = 'discount-badge';
+            discountBadge.textContent = `${product.discount}% OFF`;
+            
+            productPrice.appendChild(originalPrice);
+            productPrice.appendChild(currentPrice);
+            productPrice.appendChild(discountBadge);
+          } else {
+            currentPrice.textContent = `₹${price.toFixed(2)}`;
+            productPrice.appendChild(currentPrice);
+          }
+        } else {
+          const priceText = document.createElement('span');
+          priceText.textContent = 'Price on request';
+          productPrice.appendChild(priceText);
+        }
+        
+        const productCategory = document.createElement('span');
+        productCategory.className = 'product-category';
+        productCategory.textContent = product.category ? 
+          product.category.charAt(0).toUpperCase() + product.category.slice(1) : 
+          'Other';
+        
+        productInfo.appendChild(productName);
+        productInfo.appendChild(productPrice);
+        productInfo.appendChild(productCategory);
+        
+        productCard.appendChild(productImage);
+        productCard.appendChild(productInfo);
+        
+        return productCard;
+      }
+
+      function showErrorMessage(message) {
+        const header = document.querySelector('.categories-header');
+        if (!header) return;
+        
+        const errorElement = document.createElement('p');
+        errorElement.style.textAlign = 'center';
+        errorElement.style.padding = '20px';
+        errorElement.style.color = '#e63946';
+        errorElement.textContent = message;
+        
+        header.appendChild(errorElement);
+      }
+
+      // View more button functionality
+      document.getElementById('viewMoreBtn').addEventListener('click', function() {
+        window.location.href = 'categories.html?showAll=true';
+      });
+
+      // Initialize
+      loadProducts();
+    });
+  </script>
+</body>
+</html>

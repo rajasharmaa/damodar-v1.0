@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Damodar Traders - Home</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.css">
+  <link rel="stylesheet" href="style1.css">
+
+  <!-- Add these GSAP scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/EasePack.min.js"></script>
+  <script src="InertiaPlugin.min.js"></script>
+  
+  <style>
+    /* Industrial Background Styles */
+.industrial-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+  background: #f5f7fa;
+}
+
+.pipe {
+  position: absolute;
+  background: rgba(58, 123, 213, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(58, 123, 213, 0.1);
+}
+
+.pipe-connector {
+  position: absolute;
+  background: rgba(58, 123, 213, 0.15);
+  border-radius: 50%;
+}
+
+.particle {
+  position: absolute;
+  background: rgba(58, 123, 213, 0.2);
+  border-radius: 50%;
+}
+  </style>
+</head>
+
+<body>
+  <nav>
+    <a href="index.html">
+      <img src="./Create_a_logo_concep-removebg-preview.png" alt="Damodar Traders Logo">
+    </a>
+    
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+      <i class="fas fa-bars"></i>
+    </button>
+    
+    <div class="nav-overlay" id="navOverlay"></div>
+    
+    <ul id="navMenu">
+      <li><a href="index.html">Home</a></li>
+
+      <li class="nav-product">
+        <a href="categories.html">Product</a>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M18.2197 8.546L12.2531 14.5126C12.1555 14.6102 11.9972 14.6102 11.8996 14.5126L6.02767 8.64067C5.73477 8.34778 5.2599 8.34778 4.96701 8.64067C4.67411 8.93357 4.67411 9.40844 4.96701 9.70133L10.8389 15.5732C11.5223 16.2566 12.6304 16.2566 13.3138 15.5732L19.2803 9.60666C19.5732 9.31377 19.5732 8.8389 19.2803 8.546C18.9874 8.25311 18.5126 8.25311 18.2197 8.546Z"
+            fill="currentColor"></path>
+        </svg>
+
+        <div class="product-dropdown">
+          <a href="categories.html">All Categories</a>
+          <a href="products.html?category=pipes">Pipes</a>
+          <a href="products.html?category=fittings">Fittings</a>
+          <a href="products.html?category=valves">Valves</a>
+          <a href="products.html?category=other">Other Products</a>
+        </div>
+      </li>
+
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="contact.html">Contact us</a></li>
+      
+      
+    </ul>
+
+    <div class="btn">
+      <button class="btn1" onclick="window.location.href='login.html'">Log in</button>
+    </div>
+  </nav>
+
+  <hr class="line">
+  <div class="main">
+  
+    <div class="industrial-background">
+      <div class="pipes-container"></div>
+      <div class="particles-container"></div>
+    </div>
+
+    <div id="page1">
+      <h1 id="head">DAMODAR TRADERS</h1>
+      <h2 id="head1">C.I&G.I pipe Fitting</h2>
+      <p class="pera1">Established in year 2011, Damodar Traders has made a well-recognized name as a manufacturer of
+        Foot Valves, Pipe Fittings and more.<br> We have achieved expertise in catering to the requirements of our
+        clients
+        exactly as per their needs. We emphasize on stringent quality standards in order to ensure that the products
+        provided to our clients is always optimum to its level.
+
+        Over the years of our operation, we have registered consistent growth rate under the insightful guidance of our
+        mentor Damodar Prasad Sharma (Owner).</p>
+    </div>
+
+    <div id="page2">
+      <section class="mwg_effect000">
+        <div class="header">
+          <div></div>
+          <div>Our Product</div>
+          <div></div>
+        </div>
+
+        <div class="medias" id="mediaContainer">
+          <!-- Products will be loaded here -->
+        </div>
+      </section>
+    </div>
+
+    <hr>
+
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-row">
+          <div class="footer-col">
+            <img src="./Create_a_logo_concep-removebg-preview.png" alt="Damodar Traders Logo" class="footer-logo">
+            <p class="footer-about">Established in 2011, Damodar Traders is a leading manufacturer of high-quality pipe
+              fittings and valves, serving industrial and commercial clients nationwide.</p>
+          </div>
+
+          <div class="footer-col">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="categories.html">Products</a></li>
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="contact.html">Contact</a></li>
+              <li><a href="admin.html">Admin</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h4>Products</h4>
+            <ul>
+              <li><a href="products.html?category=pipes">Pipes</a></li>
+              <li><a href="products.html?category=fittings">Fittings</a></li>
+              <li><a href="products.html?category=valves">Valves</a></li>
+              <li><a href="products.html?category=other">Other Products</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h4>Contact Us</h4>
+            <ul class="contact-info">
+              <li><i class="fas fa-map-marker-alt"></i> 123 Trade Street, Industrial Area</li>
+              <li><i class="fas fa-phone"></i> +91 9876543210</li>
+              <li><i class="fas fa-envelope"></i> info@damodartraders.com</li>
+              <li><i class="fas fa-clock"></i> Mon-Fri: 9AM-6PM</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+          <p>&copy; 2023 Damodar Traders. All Rights Reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+  <script src="InertiaPlugin.min.js"></script>
+  <script src="script.js"></script>
+  <script src="add.js"></script>
+
+  <script>
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const navMenu = document.getElementById('navMenu');
+    const navOverlay = document.getElementById('navOverlay');
+
+    mobileMenuBtn.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+      navOverlay.classList.toggle('active');
+    });
+
+    navOverlay.addEventListener('click', () => {
+      navMenu.classList.remove('active');
+      navOverlay.classList.remove('active');
+    });
+
+    // Toggle product dropdown on mobile
+    const navProducts = document.querySelectorAll('.nav-product');
+    navProducts.forEach(item => {
+      item.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          item.classList.toggle('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
